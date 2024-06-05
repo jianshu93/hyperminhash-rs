@@ -162,14 +162,14 @@ impl Sketch {
 
     /// Add an element to this set, using the element's Hash-implementation
     pub fn add(&mut self, v: impl hash::Hash) {
-        let mut hasher = xxhash_rust::xxh3::Xxh3::new();
+        let mut hasher = gxhash::GxHasher::default();
         v.hash(&mut hasher);
-        self.add_hash(hasher.digest128());
+        self.add_hash(hasher.finish_u128());
     }
 
     /// Add a single element given by raw bytes to this set
     pub fn add_bytes(&mut self, v: &[u8]) {
-        self.add_hash(xxhash_rust::xxh3::xxh3_128(v));
+        self.add_hash(gxhash::gxhash128(v, 41)); // Assuming 0 as the seed value
     }
 
     fn sum_and_zeros(&self) -> (f64, f64) {
